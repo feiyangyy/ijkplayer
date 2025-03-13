@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.22)
 
 project(ijkplayer)
 
+# 为 C 语言添加编译选项以忽略 -Wint-conversion 警告
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-int-conversion")
+# 为 C++ 语言添加编译选项以忽略 -Wint-conversion 警告
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-int-conversion")
 
 if (ANDROID_ABI STREQUAL "armeabi-v7a")
     set(ARCH "armv7a")
