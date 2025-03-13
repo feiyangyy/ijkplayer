@@ -18,9 +18,10 @@
 package tv.danmaku.ijk.media.example.widget.media;
 
 import android.content.Context;
-import android.support.v7.app.ActionBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.MediaController;
