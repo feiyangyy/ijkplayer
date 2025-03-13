@@ -29,6 +29,7 @@
 #include "ijksdl/ijksdl_log.h"
 #include "ijksdl/ijksdl_vout.h"
 #include "ijksdl/gles2/internal.h"
+#include <android/native_window.h>
 
 #define IJK_EGL_RENDER_BUFFER 0
 
