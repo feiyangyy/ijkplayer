@@ -195,23 +195,28 @@ int SDL_Android_GetApiLevel()
 #endif
 }
 
-
-JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved)
+int JNI_OnLoad_SDL(JavaVM *vm,JNIEnv* env)
 {
-    int retval;
-    JNIEnv* env = NULL;
-
     g_jvm = vm;
-    if ((*vm)->GetEnv(vm, (void**) &env, JNI_VERSION_1_4) != JNI_OK) {
-        return -1;
-    }
-
-    retval = J4A_LoadAll__catchAll(env);
-    JNI_CHECK_RET(retval == 0, env, NULL, NULL, -1);
-
-    return JNI_VERSION_1_4;
+    return J4A_LoadAll__catchAll_sdl(env);
 }
 
-JNIEXPORT void JNICALL JNI_OnUnload(JavaVM *jvm, void *reserved)
-{
-}
+//JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved)
+//{
+//    int retval;
+//    JNIEnv* env = NULL;
+//
+//    g_jvm = vm;
+//    if ((*vm)->GetEnv(vm, (void**) &env, JNI_VERSION_1_4) != JNI_OK) {
+//        return -1;
+//    }
+//
+//    retval = J4A_LoadAll__catchAll(env);
+//    JNI_CHECK_RET(retval == 0, env, NULL, NULL, -1);
+//
+//    return JNI_VERSION_1_4;
+//}
+//
+//JNIEXPORT void JNICALL JNI_OnUnload(JavaVM *jvm, void *reserved)
+//{
+//}

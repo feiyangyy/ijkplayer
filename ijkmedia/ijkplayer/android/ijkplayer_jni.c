@@ -49,8 +49,6 @@
     JNI_CHECK_GOTO((retval != EIJK_OUT_OF_MEMORY), env, "java/lang/OutOfMemoryError", NULL, label); \
     JNI_CHECK_GOTO((retval == 0), env, JNI_IJK_MEDIA_EXCEPTION, NULL, label);
 
-static JavaVM* g_jvm;
-
 typedef struct player_fields_t {
     pthread_mutex_t mutex;
     jclass clazz;
@@ -1186,7 +1184,6 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
 {
     JNIEnv* env = NULL;
 
-    g_jvm = vm;
     if ((*vm)->GetEnv(vm, (void**) &env, JNI_VERSION_1_4) != JNI_OK) {
         return -1;
     }
@@ -1202,6 +1199,8 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
     ijkmp_global_set_inject_callback(inject_callback);
 
     FFmpegApi_global_init(env);
+    int retval = JNI_OnLoad_SDL(vm, env);
+    JNI_CHECK_RET(retval == 0, env, NULL, NULL, -1);
 
     return JNI_VERSION_1_4;
 }

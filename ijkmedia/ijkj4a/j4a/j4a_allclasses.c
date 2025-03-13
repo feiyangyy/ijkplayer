@@ -20,7 +20,7 @@
 
 #include "j4a_allclasses.h"
 
-int J4A_LoadAll__catchAll(JNIEnv *env)
+int J4A_LoadAll__catchAll_sdl(JNIEnv *env)
 {
     int ret = 0;
 

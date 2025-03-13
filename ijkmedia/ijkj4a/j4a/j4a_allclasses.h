@@ -24,4 +24,6 @@
 #include "j4a_base.h"
 #include "j4a_allclasses.include.h"
 
+int J4A_LoadAll__catchAll_sdl(JNIEnv *env);
+
 #endif
