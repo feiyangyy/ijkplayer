@@ -240,7 +240,9 @@ static void aout_close_audio(SDL_Aout *aout)
     SDL_Aout_Opaque *opaque = aout->opaque;
     if (!opaque)
         return;
-
+    if (NULL == opaque->audio_tid) {
+        return;
+    }
     SDL_LockMutex(opaque->wakeup_mutex);
     opaque->abort_request = true;
     SDL_CondSignal(opaque->wakeup_cond);

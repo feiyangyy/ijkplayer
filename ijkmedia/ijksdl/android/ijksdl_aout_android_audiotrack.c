@@ -250,7 +250,9 @@ static void aout_set_volume(SDL_Aout *aout, float left_volume, float right_volum
 static void aout_close_audio(SDL_Aout *aout)
 {
     SDL_Aout_Opaque *opaque = aout->opaque;
-
+    if (NULL == opaque->audio_tid) {
+        return;
+    }
     SDL_LockMutex(opaque->wakeup_mutex);
     opaque->abort_request = true;
     SDL_CondSignal(opaque->wakeup_cond);
