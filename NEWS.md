@@ -1,6 +1,8 @@
-tag next
+tag k0.8.9
 --------------------------------
 - ffmpeg: upgrade to 4.0
+- upgrade ndk to r27c
+- merge android three so to one
 
 tag k0.8.8
 --------------------------------
