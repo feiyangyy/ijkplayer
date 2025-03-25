@@ -42,3 +42,7 @@ xcshareddata
 *.xccheckout
 
 android/ijkplayer/ijkplayer-cmake/.cxx
+ios/IJKMediaPlayer/Release-iphoneos
+ios/IJKMediaPlayer/Release-iphonesimulator
+ios/xcframewrok/IJKMediaFramework.xcframework
+ios/xcframewrok/IJKMediaFramework.spec.json

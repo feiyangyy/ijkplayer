@@ -1,0 +1,67 @@
+{
+  "name": "IJKMediaFramework",
+  "version": "__VERSION__",
+  "summary": "IJKMediaFramework is iOS platform ijkplayer framework.",
+  "description": "IJKMediaFramework is iOS platform ijkplayer framework.",
+  "homepage": "https://github.com/debugly/ijkplayer",
+  "documentation_url": "https://github.com/debugly/ijkplayer",
+  "social_media_url": "https://github.com/debugly/ijkplayer",
+  "license": {
+    "type": "LGPL",
+    "file": "IJKMediaFramework/LICENSE"
+  },
+  "authors": {
+    "MattReach": "qianlongxu@gmail.com"
+  },
+  "platforms": {
+    "ios": "11.0",
+    "osx": "10.11",
+    "tvos": "12.0"
+  },
+  "source": {
+    "http": "https://github.com/debugly/ijkplayer/releases/download/__VERSION__/IJKMediaFramework.zip"
+  },
+  "preserve_paths": [
+    "IJKMediaFramework/README.md",
+    "IJKMediaFramework/CHANGELOG.md",
+    "IJKMediaFramework/LICENSE"
+  ],
+  "vendored_frameworks": "IJKMediaFramework.xcframework",
+  "libraries": [
+    "z",
+    "iconv",
+    "xml2",
+    "bz2",
+    "c++",
+    "lzma"
+  ],
+  "frameworks": [
+    "AVFoundation",
+    "AudioToolbox",
+    "CoreMedia",
+    "CoreVideo",
+    "VideoToolbox",
+    "Metal"
+  ],
+  "osx": {
+    "frameworks": [
+      "Cocoa",
+      "AudioUnit",
+      "OpenGL",
+      "GLKit",
+      "CoreImage"
+    ]
+  },
+  "tvos": {
+    "frameworks": [
+      "UIKit",
+      "OpenGLES"
+    ]
+  },
+  "ios": {
+    "frameworks": [
+      "UIKit",
+      "OpenGLES"
+    ]
+  }
+}
