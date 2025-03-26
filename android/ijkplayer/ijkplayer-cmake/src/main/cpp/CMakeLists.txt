@@ -19,6 +19,16 @@ else()
     message(WARNING "Unsupported ANDROID_ABI: ${ANDROID_ABI}")
 endif()
 
+
+execute_process(
+        COMMAND
+        "${CMAKE_CURRENT_SOURCE_DIR}/ijkmedia/ijkplayer/version.sh" "${CMAKE_CURRENT_SOURCE_DIR}/ijkmedia/ijkplayer" ijkversion.h
+        OUTPUT_VARIABLE _stdout
+        ERROR_VARIABLE _stderr
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        ERROR_STRIP_TRAILING_WHITESPACE
+)
+
 set(ijkmedia ${CMAKE_CURRENT_SOURCE_DIR}/ijkmedia)
 include_directories(${ijkmedia})
 include_directories(${ijkmedia}/ijkj4a)
