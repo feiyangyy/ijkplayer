@@ -28,7 +28,7 @@ include_directories(${ijkmedia}/ijkplayer)
 file(GLOB_RECURSE SOURCE_IJKJ4A ${ijkmedia}/ijkj4a/*.c  ${ijkmedia}/ijkj4a/*.cpp)
 file(GLOB_RECURSE SOURCE_SDL ${ijkmedia}/ijksdl/*.c  ${ijkmedia}/ijksdl/*.cpp)
 file(GLOB_RECURSE SOURCE_IJKPLAYER ${ijkmedia}/ijkplayer/*.c ${ijkmedia}/ijkplayer/*.cpp)
-file(GLOB_RECURSE SOURCE_SOUNDTOUCH ${ijkmedia}/ijksoundtouch/*.cpp)
+file(GLOB_RECURSE SOURCE_SOUNDTOUCH ${ijkmedia}/ijksoundtouch/ijksoundtouch_wrap.cpp)
 
 add_library(${CMAKE_PROJECT_NAME}
     SHARED
