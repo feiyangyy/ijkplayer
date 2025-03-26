@@ -22,13 +22,44 @@
 
 老旧项目一直在使用 B 站 ijkplayer 并且功能完全可以满足的情况下，可直接升级上来，好处是升级了编译工具链，能够正常在最新的安卓15 和 iOS18 上正常运行。
 
+## 安装使用
 
-## 安装
+- ios
+  
+  ```
+  pod "IJKMediaFramework", :podspec => 'https://github.com/debugly/ijkplayer/releases/download/k0.8.8-beta-250325175641/IJKMediaFramework.spec.json'
+  ```
 
-```
-pod "IJKMediaFramework", :podspec => 'https://github.com/debugly/ijkplayer/releases/download/k0.8.8-beta-250325175641/IJKMediaFramework.spec.json'
-```
+- android
+  
+  ```
+  https://github.com/debugly/ijkplayer/releases/download/k0.8.8-beta-250326100747/ijkplayer-cmake-release.aar
+  ```
+  
+  更多版本，查看 [Releases](https://github.com/debugly/ijkplayer/releases) 页面。
+
+## 运行 Demo
+
+原版 demo 可以正常运行：
+
+- ios
+  
+  ```
+  git submodule update --init
+  cd ios
+  ./install-ffmpeg.sh
+  open IJKMediaDemo/IJKMediaDemo.xcodeproj
+  ```
+
+- android
+  
+  ```
+  git submodule update --init
+  cd android
+  ./install-ffmpeg.sh
+  # 使用 Android Studio 打开 ijkplayer 目录工程
+  ```
 
 ## FSPlayer
 
-如果 ijkplayer 功能不能满足当前复杂的业务需求，则可以使用 [fsplayer](https://github.com/debugly/fsplayer) ，提供了更加强劲的功能。
+如果 ijkplayer 功能不能满足当前复杂的业务需求，则可以使用 ijkplayer 的升级版 [fsplayer](https://github.com/debugly/fsplayer) ，它提供了更加强劲的功能。
