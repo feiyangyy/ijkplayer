@@ -1,0 +1,67 @@
+name: ios-IJKMediaFramework
+
+on:
+  # push:
+  #   branches: [master]
+  # pull_request:
+  #   branches: [master]
+  workflow_dispatch:
+    inputs:
+      beta:
+        type: boolean
+        description: publish beta edition
+        default: true
+        required: false
+jobs:
+  build:
+    name: ijkplayer
+    runs-on: macos-14
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+          submodules: recursive
+    - name: Prepare Beta Version
+      if: ${{ inputs.beta == true }}
+      run: |
+        grep -m 1 VERSION_NAME= version.sh | awk -F = '{printf "VERSION=%s",$2}' | xargs > constants.env
+        echo "RELEAE_DATE=$(TZ=UTC-8 date +'%y%m%d%H%M%S')" >> constants.env
+        echo "TAG=k"$(grep "VERSION" constants.env | cut -d'=' -f2)"-beta-"$(grep "RELEAE_DATE" constants.env | cut -d'=' -f2) >> constants.env
+        cat constants.env
+    - name: Prepare Normal Version
+      if: ${{ inputs.beta == false }}
+      run: |
+        grep -m 1 VERSION_NAME= version.sh | awk -F = '{printf "TAG=k%s",$2}' | xargs > constants.env
+        cat constants.env
+    - name: Export Env
+      uses: cardinalby/export-env-action@v2
+      with:
+        envFile: 'constants.env'
+    - name: Download Pre Compiled Dependencies
+      run: cd ios && ./install-ffmpeg.sh
+    - name: Build iOS Framework
+      run: cd ios && ./build-framework.sh
+    - name: Make xcframework
+      run: cd ios/xcframewrok && ./make-xcframework.sh
+    - name: Make podspec
+      run: cd ios/xcframewrok && ./make-podspec.sh "${{ env.TAG }}"
+    - name: Make Distribution Resources
+      run: |
+        mkdir dist
+        cp NEWS.md dist 
+        cp README.md dist
+        cp COPYING.LGPLv3 dist/LICENSE
+        cp -pPR ios/xcframewrok/IJKMediaFramework.xcframework dist
+        cd dist
+        zip -ryq IJKMediaFramework.zip ./*
+    - name: Download Pre Compiled Dependencies
+      run: cd android && ./install-ffmpeg.sh
+    - name: Build android arr
+      run: cd android && ./build-aar.sh  
+    - name: Upload Release Asset
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        branch=$(git branch --show-current)
+        gh release create ${{ env.TAG }} --target $branch -t "👏👏 ijkplayer ${{ env.TAG }}" dist/IJKMediaFramework.zip ios/xcframewrok/IJKMediaFramework.spec.json android/ijkplayer/ijkplayer-cmake/build/outputs/aar/*.*

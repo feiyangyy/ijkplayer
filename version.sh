@@ -2,8 +2,8 @@
 
 set -e
 
-VERSION_CODE=800800
-VERSION_NAME=0.8.8
+VERSION_CODE=800900
+VERSION_NAME=0.8.9
 VERSION_TARGET=$1
 
 do_version_readme() {
@@ -12,11 +12,15 @@ do_version_readme() {
     # | sed "s/\(#compile 'tv.danmaku.ijk.media:ijkplayer-java:#\)[[:digit:]][[:digit:].]*\(#'#\)/\1:$VERSION_NAME\2/" \
     # > README.md.new
 
-    cat README.md \
-    | sed "s/\(compile \'tv.danmaku.ijk.media:ijkplayer-[[:alnum:]_]*:\)[[:digit:].]*[[:digit:]]/\1$VERSION_NAME/g" \
-    | sed "s/\(git checkout -B latest k\)[[:digit:]][[:digit:].]*/\1$VERSION_NAME/g" \
-    > README.md.new
+    # cat README.md \
+    # | sed "s/\(compile \'tv.danmaku.ijk.media:ijkplayer-[[:alnum:]_]*:\)[[:digit:].]*[[:digit:]]/\1$VERSION_NAME/g" \
+    # | sed "s/\(git checkout -B latest k\)[[:digit:]][[:digit:].]*/\1$VERSION_NAME/g" \
+    # > README.md.new
 
+    cat README.md \
+    | sed "s#\(.*download/k\)\([[:alnum:].-]*\)\(/IJKMediaFramework.spec.json\)#\1$VERSION_NAME\3#g" \
+    | sed "s#\(.*download/k\)\([[:alnum:].-]*\)\(/ijkplayer-cmake-release.aar\)#\1$VERSION_NAME\3#g" \
+    > README.md.new
     mv -f README.md.new README.md
 }
 
