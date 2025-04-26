@@ -562,6 +562,8 @@ typedef struct FFPlayer {
     AVDictionary *format_opts;
     AVDictionary *codec_opts;
     AVDictionary *sws_dict;
+    // ffmpeg相关的配置
+    // 这个其实有点类似于从命令行传给ffplay的参数
     AVDictionary *player_opts;
     AVDictionary *swr_opts;
     AVDictionary *swr_preset_opts;

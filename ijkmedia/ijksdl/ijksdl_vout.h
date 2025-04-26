@@ -59,6 +59,9 @@ struct SDL_VoutOverlay {
 
 typedef struct SDL_Vout_Opaque SDL_Vout_Opaque;
 typedef struct SDL_Vout SDL_Vout;
+/**
+ * 相当于一个抽象类
+ */
 struct SDL_Vout {
     SDL_mutex *mutex;
 

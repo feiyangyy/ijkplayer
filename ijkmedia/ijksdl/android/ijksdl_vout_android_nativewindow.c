@@ -163,10 +163,12 @@ static int func_display_overlay_l(SDL_Vout *vout, SDL_VoutOverlay *overlay)
         ALOGE("func_display_overlay_l: invalid overlay dimensions(%d, %d)", overlay->w, overlay->h);
         return -1;
     }
-
+    // 根据overlay 格式决定渲染方式, 比如有的平台是NV12
     switch(overlay->format) {
+        // AMC 是指Android media codec 方式， FCC是指four-character-code
     case SDL_FCC__AMC: {
         // only ANativeWindow support
+        // 相当于切换EGL, 并使用MediaCodec 管理frame
         IJK_EGL_terminate(opaque->egl);
         return SDL_VoutOverlayAMediaCodec_releaseFrame_l(overlay, NULL, true);
     }

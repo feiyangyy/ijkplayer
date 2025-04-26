@@ -899,6 +899,7 @@ static void video_image_display2(FFPlayer *ffp)
                 SDL_Delay(20);
             }
         }
+        // 渲染入口
         SDL_VoutDisplayYUVOverlay(ffp->vout, vp->bmp);
         ffp->stat.vfps = SDL_SpeedSamplerAdd(&ffp->vfps_sampler, FFP_SHOW_VFPS_FFPLAY, "vfps[ffplay]");
         if (!ffp->first_video_frame_rendered) {
@@ -1361,6 +1362,8 @@ retry:
             if (frame_queue_nb_remaining(&is->pictq) > 1) {
                 Frame *nextvp = frame_queue_peek_next(&is->pictq);
                 duration = vp_duration(is, vp, nextvp);
+                // frame 比较晚了, 也要丢弃
+                // 这里其实可以写个need_drop = xxxx, 更明确一些
                 if(!is->step && (ffp->framedrop > 0 || (ffp->framedrop && get_master_sync_type(is) != AV_SYNC_VIDEO_MASTER)) && time > is->frame_timer + duration) {
                     frame_queue_next(&is->pictq);
                     goto retry;
@@ -1692,7 +1695,8 @@ static int get_video_frame(FFPlayer *ffp, AVFrame *frame)
             dpts = av_q2d(is->video_st->time_base) * frame->pts;
 
         frame->sample_aspect_ratio = av_guess_sample_aspect_ratio(is->ic, is->video_st, frame);
-
+        // 仍然是ffplay中的提前丢帧逻辑，即如果帧到达晚了，则直接丢弃
+        // 不过这里有个连续丢帧统计
         if (ffp->framedrop>0 || (ffp->framedrop && get_master_sync_type(is) != AV_SYNC_VIDEO_MASTER)) {
             ffp->stat.decode_frame_count++;
             if (frame->pts != AV_NOPTS_VALUE) {
@@ -1703,6 +1707,7 @@ static int get_video_frame(FFPlayer *ffp, AVFrame *frame)
                     is->videoq.nb_packets) {
                     is->frame_drops_early++;
                     is->continuous_frame_drops_early++;
+                    // 这里是一些修改，检查连续丢帧的数量是否超过设定
                     if (is->continuous_frame_drops_early > ffp->framedrop) {
                         is->continuous_frame_drops_early = 0;
                     } else {
@@ -2983,9 +2988,17 @@ static int stream_component_open(FFPlayer *ffp, int stream_index)
                 }
             }
         }
-
+        // 在手机，特别是软解的情况下， 这些工具开的越多，也有可能出问题
         if (is->is_video_high_fps) {
             avctx->skip_frame       = FFMAX(avctx->skip_frame, AVDISCARD_NONREF);
+            // **要点**
+            // 264和mpeg 等编解码器中，有用于提高画质的"环路滤波器", 不知道和266的ALF是不是一个意思
+            // 这里跳过LF，是为了加快解码速度 (264 只有 deblocking, 265 有 deblocking 和SAO， 266 有更多)
+            // AVDISCARD_NONREF => 这里的NONREF 是指非参考帧，通常是B frame, 这里会降低帧率
+            // 适用业务场景：后台播放(甚至可以完全不解码视频， 不过不知道能否动态切换)、快进快退时的画面显示、低端设备
+            // 问题：能否动态调整idct 策略，比如切入APP时关闭idct, 切出时打开
+            // 支持的, 只要没有avcodeccontext 还有效就行， 这里我们可以在ffplay 上试一下
+            // 硬件解码器的话可能不行，行为受平台控制
             avctx->skip_loop_filter = FFMAX(avctx->skip_loop_filter, AVDISCARD_NONREF);
             avctx->skip_idct        = FFMAX(avctx->skip_loop_filter, AVDISCARD_NONREF);
         }
@@ -4025,7 +4038,7 @@ void ffp_destroy_p(FFPlayer **pffp)
     ffp_destroy(*pffp);
     *pffp = NULL;
 }
-
+// 获取相关配置
 static AVDictionary **ffp_get_opt_dict(FFPlayer *ffp, int opt_category)
 {
     assert(ffp);

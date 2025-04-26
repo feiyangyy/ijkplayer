@@ -47,6 +47,7 @@ typedef struct SDL_AMediaCrypto             SDL_AMediaCrypto;
 typedef struct SDL_AMediaCodec_Common       SDL_AMediaCodec_Common;
 typedef struct SDL_AMediaCodec_Opaque       SDL_AMediaCodec_Opaque;
 typedef struct SDL_AMediaCodec              SDL_AMediaCodec;
+// 具体渲染和mediacodec 机制有关，这里不过多纠结
 typedef struct SDL_AMediaCodec
 {
     SDL_mutex    *mutex;
@@ -86,6 +87,7 @@ typedef struct SDL_AMediaCodec
 
     ssize_t                 (*func_dequeueOutputBuffer)(SDL_AMediaCodec* acodec, SDL_AMediaCodecBufferInfo *info, int64_t timeoutUs);
     SDL_AMediaFormat*       (*func_getOutputFormat)(SDL_AMediaCodec* acodec);
+    // 这个可能要去指定回调
     sdl_amedia_status_t     (*func_releaseOutputBuffer)(SDL_AMediaCodec* acodec, size_t idx, bool render);
 
     bool                    (*func_isInputBuffersValid)(SDL_AMediaCodec* acodec);

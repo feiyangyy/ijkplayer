@@ -57,6 +57,7 @@
     .max = 0, \
     .flags = AV_OPT_FLAG_DECODING_PARAM
 
+// 所有相关配置
 static const AVOption ffp_context_options[] = {
     // original options in ffplay.c
     // FFP_MERGE: x, y, s, fs
