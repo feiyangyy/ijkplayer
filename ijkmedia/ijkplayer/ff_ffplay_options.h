@@ -77,6 +77,9 @@ static const AVOption ffp_context_options[] = {
     // FFP_MERGE: genpts, drp, lowres, sync, autoexit, exitonkeydown, exitonmousedown
     { "loop",                           "set number of times the playback shall be looped",
         OPTION_OFFSET(loop),            OPTION_INT(1, INT_MIN, INT_MAX) },
+        // 正常情况下， ffplay 会限制最大缓存以免占用过多内存
+        // 这里要进一步了解推拉流协议，以及是否存在数据管理的，情况，这里的infbuf就是取消缓存上限，也是为了降低
+        // 延迟
     { "infbuf",                         "don't limit the input buffer size (useful with realtime streams)",
         OPTION_OFFSET(infinite_buffer), OPTION_INT(0, 0, 1) },
     { "framedrop",                      "drop frames when cpu is too slow",
@@ -121,9 +124,11 @@ static const AVOption ffp_context_options[] = {
         OPTION_OFFSET(pictq_size),          OPTION_INT(VIDEO_PICTURE_QUEUE_SIZE_DEFAULT,
                                                        VIDEO_PICTURE_QUEUE_SIZE_MIN,
                                                        VIDEO_PICTURE_QUEUE_SIZE_MAX) },
-
+    // 播放器预加载数据量，也就是最多缓存多少数据
+    // 似乎这个和infbuf对立，并且在设置了infbuf的情况下，就不在检查buffer_size了
     { "max-buffer-size",                    "max buffer size should be pre-read",
         OPTION_OFFSET(dcc.max_buffer_size), OPTION_INT(MAX_QUEUE_SIZE, 0, MAX_QUEUE_SIZE) },
+    // 最小解码帧数
     { "min-frames",                         "minimal frames to stop pre-reading",
         OPTION_OFFSET(dcc.min_frames),      OPTION_INT(DEFAULT_MIN_FRAMES, MIN_MIN_FRAMES, MAX_MIN_FRAMES) },
     { "first-high-water-mark-ms",           "first chance to wakeup read_thread",
@@ -141,9 +146,14 @@ static const AVOption ffp_context_options[] = {
         OPTION_INT(DEFAULT_LAST_HIGH_WATER_MARK_IN_MS,
                    DEFAULT_FIRST_HIGH_WATER_MARK_IN_MS,
                    DEFAULT_LAST_HIGH_WATER_MARK_IN_MS) },
-
+    // 以264举例，一个avpacket 通常包含一个或者多个连续的NALU单元,NALU结构本身有边界， muxer（封装和复用器）在打包容器格式时
+    // 都是以NALU为单元组织的。因此avpacket 作为demuxer的输出，通常是解码器可消费的完整单元
+    // 但是在传输不稳定时，可能会出现不完整的NALU单元，此时avpacket的数据可能是不完整的
+    // packet buffering 是指demuxer 会积累一定量的packet 才会送给decoder, 在此之前先做缓存。 这个和播放器的packet缓存不同，这个是
+    // ffmpeg-demuxer 内置的
+    // 这里还涉及一个概念叫做 播放下溢
     { "packet-buffering",                   "pause output until enough packets have been read after stalling",
-        OPTION_OFFSET(packet_buffering),    OPTION_INT(1, 0, 1) },
+        OPTION_OFFSET(packet_buffering),    OPTION_INT(1, 0, 1) }, 
     { "sync-av-start",                      "synchronise a/v start time",
         OPTION_OFFSET(sync_av_start),       OPTION_INT(1, 0, 1) },
     { "iformat",                            "force format",

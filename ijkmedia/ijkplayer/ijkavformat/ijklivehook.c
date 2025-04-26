@@ -139,7 +139,11 @@ static int open_inner(AVFormatContext *avf)
 
     if (c->open_opts)
         av_dict_copy(&tmp_opts, c->open_opts, 0);
-
+    // 这里的probesize, option 中没开，是用于再打开输入流时，最多读取多少数据来探测格式
+    // 比如，一个TS流中的视频流、音频流和字幕流等具体的编码格式需要分析和探测
+    // 这里又有个很好的问题，如何探测具体格式?
+    // 如果超过probesize 还是不能确定，则返回失败，或者继续推测
+    // 这个参数会影响到启动速度，探测工作是由avformat 执行的，具体是在avformat_open_input 中执行的
     av_dict_set_int(&tmp_opts, "probesize",         avf->probesize, 0);
     av_dict_set_int(&tmp_opts, "formatprobesize",   avf->format_probesize, 0);
     av_dict_set_int(&tmp_opts, "analyzeduration",   avf->max_analyze_duration, 0);

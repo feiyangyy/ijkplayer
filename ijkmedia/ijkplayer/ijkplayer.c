@@ -418,7 +418,9 @@ static int ijkmp_prepare_async_l(IjkMediaPlayer *mp)
 
     return 0;
 }
-
+/**
+ * 还真有一个异步准备
+ */
 int ijkmp_prepare_async(IjkMediaPlayer *mp)
 {
     assert(mp);

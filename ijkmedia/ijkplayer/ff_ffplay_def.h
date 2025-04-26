@@ -90,6 +90,7 @@
 #define DEFAULT_MIN_FRAMES  50000
 #define MIN_MIN_FRAMES      2
 #define MAX_MIN_FRAMES      50000
+// 这里的macro 就是取min_frames
 #define MIN_FRAMES (ffp->dcc.min_frames)
 #define EXTERNAL_CLOCK_MIN_FRAMES 2
 #define EXTERNAL_CLOCK_MAX_FRAMES 10
@@ -652,6 +653,9 @@ typedef struct FFPlayer {
     int auto_resume;
     int error;
     int error_count;
+    // 准备好后立即播放，就像android mediaplayer的prepared和started 状态一样
+    // 这里是状态自动切换，如果没开，则需要外部手动触发播放（如，点击播放按钮）
+    // 这里有个经典的提前缓冲，再等待用户点击
     int start_on_prepared;
     int first_video_frame_rendered;
     int first_audio_frame_rendered;

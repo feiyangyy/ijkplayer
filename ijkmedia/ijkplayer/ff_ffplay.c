@@ -3035,6 +3035,7 @@ static int decode_interrupt_cb(void *ctx)
     return is->abort_request;
 }
 
+// 这里要求的其实是控制队列容量的下限
 static int stream_has_enough_packets(AVStream *st, int stream_id, PacketQueue *queue, int min_frames) {
     return stream_id < 0 ||
            queue->abort_request ||
@@ -3323,7 +3324,7 @@ static int read_thread(void *arg)
     } else {
         assert("invalid streams");
     }
-
+    // 这里默认值的话强制打开 在realtime时强制打开,why?
     if (ffp->infinite_buffer < 0 && is->realtime)
         ffp->infinite_buffer = 1;
 
@@ -3464,6 +3465,9 @@ static int read_thread(void *arg)
         }
 
         /* if the queue are full, no need to read more */
+        // buffer 满了，且是默认值, 如果是infinite_buffer 则直接走后面的了
+        // 这里是三个queue的size 超过了最大Buffer size的话，就不读了
+        // MAX_QUEUE_SIZE 可能是原始在ffplay中定义的
         if (ffp->infinite_buffer<1 && !is->seek_req &&
 #ifdef FFP_MERGE
               (is->audioq.size + is->videoq.size + is->subtitleq.size > MAX_QUEUE_SIZE
