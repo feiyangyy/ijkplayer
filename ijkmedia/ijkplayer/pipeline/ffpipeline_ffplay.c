@@ -48,6 +48,7 @@ static SDL_Aout *func_open_audio_output(IJKFF_Pipeline *pipeline, FFPlayer *ffp)
     return NULL;
 }
 
+// 各种多态绑定，此处是从ffplay 创建
 IJKFF_Pipeline *ffpipeline_create_from_ffplay(FFPlayer *ffp)
 {
     IJKFF_Pipeline *pipeline = ffpipeline_alloc(&g_pipeline_class, sizeof(IJKFF_Pipeline_Opaque));

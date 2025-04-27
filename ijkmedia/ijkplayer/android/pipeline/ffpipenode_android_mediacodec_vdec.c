@@ -1946,6 +1946,9 @@ IJKFF_Pipenode *ffpipenode_create_video_decoder_from_android_mediacodec(FFPlayer
             ALOGE("%s: MediaCodec: AVC/H264 is disabled. codec_id:%d \n", __func__, opaque->codecpar->codec_id);
             goto fail;
         }
+        /**
+         * 各种配置，某些硬件只能支持部分配置编码
+         */
         switch (opaque->codecpar->profile) {
             case FF_PROFILE_H264_BASELINE:
                 ALOGI("%s: MediaCodec: H264_BASELINE: enabled\n", __func__);
@@ -1995,6 +1998,7 @@ IJKFF_Pipenode *ffpipenode_create_video_decoder_from_android_mediacodec(FFPlayer
         opaque->mcc.level   = opaque->codecpar->level;
         break;
     case AV_CODEC_ID_HEVC:
+        // hevc 禁用，这里可能和硬件配置有关
         if (!ffp->mediacodec_hevc && !ffp->mediacodec_all_videos) {
             ALOGE("%s: MediaCodec/HEVC is disabled. codec_id:%d \n", __func__, opaque->codecpar->codec_id);
             goto fail;

@@ -35,8 +35,19 @@ typedef struct Context {
     int             io_error;
 
     AVAppIOControl  app_io_ctrl;
+    // 基础知识：用来标记URL协议类型
+    // 例如：
+    // 1. file://
+    // 2. http://
+    // 3. https://
+    // 4. ftp://
+    // 5. rtsp://
+    // 6. mms://
+    // 7. mmsh://
+    // 8. mmst://
     const char     *scheme;
     const char     *inner_scheme;
+    // 此处是一个回调
     IjkAVIOInterruptCB *ijkio_interrupt_callback;
 
     /* options */
@@ -58,7 +69,7 @@ static int ijkio_cache_check_interrupt(IjkURLContext *h)
 
     if (c->abort_request)
         return 1;
-
+    // 回调，不清楚干啥
     if (c->ijkio_interrupt_callback && c->ijkio_interrupt_callback->callback &&
                     c->ijkio_interrupt_callback->callback(c->ijkio_interrupt_callback->opaque)) {
         c->abort_request = 1;
@@ -85,6 +96,9 @@ static int ijkio_urlhook_call_inject(IjkURLContext *h)
 
         c->app_io_ctrl.is_handled = 0;
         c->app_io_ctrl.is_url_changed = 0;
+        // 应用层通知
+        // 在application.h 中定义，存在于avutil/application.h中
+        // 相当于要通知打开链接了
         ret = av_application_on_io_control(c->app_ctx, AVAPP_CTRL_WILL_HTTP_OPEN, &c->app_io_ctrl);
         if (ret || !c->app_io_ctrl.url[0]) {
             ret = IJKAVERROR_EXIT;

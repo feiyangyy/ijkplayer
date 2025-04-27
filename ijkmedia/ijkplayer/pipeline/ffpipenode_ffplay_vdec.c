@@ -43,17 +43,19 @@ static int func_run_sync(IJKFF_Pipenode *node)
 
 IJKFF_Pipenode *ffpipenode_create_video_decoder_from_ffplay(FFPlayer *ffp)
 {
+    // 创建pipeline 节点
     IJKFF_Pipenode *node = ffpipenode_alloc(sizeof(IJKFF_Pipenode_Opaque));
     if (!node)
         return node;
-
+    //
     IJKFF_Pipenode_Opaque *opaque = node->opaque;
     opaque->ffp         = ffp;
 
     node->func_destroy  = func_destroy;
     node->func_run_sync = func_run_sync;
-
+    // 相关信息
     ffp_set_video_codec_info(ffp, AVCODEC_MODULE_NAME, avcodec_get_name(ffp->is->viddec.avctx->codec_id));
+    // 设置decoder 信息
     ffp->stat.vdec_type = FFP_PROPV_DECODER_AVCODEC;
     return node;
 }

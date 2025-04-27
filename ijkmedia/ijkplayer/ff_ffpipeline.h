@@ -32,12 +32,17 @@
 
 typedef struct IJKFF_Pipeline_Opaque IJKFF_Pipeline_Opaque;
 typedef struct IJKFF_Pipeline IJKFF_Pipeline;
+/**
+ * Pipeline 描述
+ */
 struct IJKFF_Pipeline {
     SDL_Class             *opaque_class;
     IJKFF_Pipeline_Opaque *opaque;
 
     void            (*func_destroy)             (IJKFF_Pipeline *pipeline);
+    // 开 video decoder
     IJKFF_Pipenode *(*func_open_video_decoder)  (IJKFF_Pipeline *pipeline, FFPlayer *ffp);
+    // 音频输出
     SDL_Aout       *(*func_open_audio_output)   (IJKFF_Pipeline *pipeline, FFPlayer *ffp);
     IJKFF_Pipenode *(*func_init_video_decoder)  (IJKFF_Pipeline *pipeline, FFPlayer *ffp);
     int           (*func_config_video_decoder)  (IJKFF_Pipeline *pipeline, FFPlayer *ffp);

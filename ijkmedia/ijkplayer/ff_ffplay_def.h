@@ -490,10 +490,10 @@ typedef struct FFTrackCacheStatistic
     int64_t packets;
 } FFTrackCacheStatistic;
 
+// 一些统计
 typedef struct FFStatistic
 {
     int64_t vdec_type;
-
     float vfps;
     float vdps;
     float avdelay;
@@ -669,13 +669,14 @@ typedef struct FFPlayer {
     int pictq_size;
     int max_fps;
     int startup_volume;
-
+    // ios 平台各种配置
     int videotoolbox;
     int vtb_max_frame_width;
     int vtb_async;
     int vtb_wait_async;
     int vtb_handle_resolution_change;
 
+    // 安卓平台各种配置
     int mediacodec_all_videos;
     int mediacodec_avc;
     int mediacodec_hevc;
@@ -722,6 +723,8 @@ typedef struct FFPlayer {
     int get_frame_mode;
     GetImgInfo *get_img_info;
     int async_init_decoder;
+    // 这个mime 是不是fourcc? 不是
+    // mime 是在运行时判断的
     char *video_mime_type;
     char *mediacodec_default_name;
     int ijkmeta_delay_init;
@@ -819,8 +822,8 @@ inline static void ffp_reset_internal(FFPlayer *ffp)
     ffp->vtb_wait_async                 = 0; // option
 
     ffp->mediacodec_all_videos          = 0; // option
-    ffp->mediacodec_avc                 = 0; // option
-    ffp->mediacodec_hevc                = 0; // option
+    ffp->mediacodec_avc = 0;                 // option, 同下
+    ffp->mediacodec_hevc = 0;                // option, 默认禁用，需要通过option 打开
     ffp->mediacodec_mpeg2               = 0; // option
     ffp->mediacodec_handle_resolution_change = 0; // option
     ffp->mediacodec_auto_rotate         = 0; // option
